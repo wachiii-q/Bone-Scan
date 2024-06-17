@@ -34,7 +34,7 @@ This repository consists of 2 parts
 
 ### Reinstallation
 
-    pip install -e . --force-reinstall
+        pip install -e . --force-reinstall
 
 ## Contributor(s)
 
