@@ -1,6 +1,6 @@
 # Dataset
-BoneReport_2018.csv
-BoneReport_2018.xlsx
+data/BoneReport_2018.csv
+data/BoneReport_2018.xlsx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
