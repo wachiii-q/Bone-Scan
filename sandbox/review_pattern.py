@@ -15,7 +15,28 @@ if __name__ == '__main__':
     for case in range(numCases):
         reportText = reportDf.loc[case, 'Report']
         tmpImpressionText = TextTools.split_text(reportText, 'IMPRESSION', 'end of report')
-        log(tmpImpressionText)
+        impressionTextLst.append(tmpImpressionText)
         i = i + 1
-        log('Case: ', i)
+    lenImpressionText = len(impressionTextLst)
+    log('Number of impression text: ', lenImpressionText)
+    
+    # -- Step 2: convert list of text to dataframe
+    impressionDf = pd.DataFrame(impressionTextLst, columns=['Impression'])
+    numCases = impressionDf.shape[0]
+    
+    # -- Step 3: loop check for the misspelled word "metastasis" in the impression text
+    j = 0
+    for case in range(500, 1000):
+        tmpText = impressionDf.loc[case, 'Impression']
+        tmpText = str(tmpText)
+        if "metastasis" or "metastases" in tmpText:
+            log("Metastasis found in case ", j)
+            log(tmpText)
+        else:
+            log(tmpText)
+            log("Metastasis not found in case ", j)
+            break
+        j = j + 1
+    
+    # -- Step 4:
     

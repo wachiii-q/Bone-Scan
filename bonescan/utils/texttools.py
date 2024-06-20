@@ -25,6 +25,7 @@ class TextTools:
                     text1 = "impresssion"
                     if text1 not in text:
                         text1 = "impressoin"
+        #TODO: Raise if not found -> show which index is not found
         if (text2.lower() == "end of report"):
             # split text between text1 and end of text
             text = text.split(text1)[1]   
@@ -36,7 +37,7 @@ class TextTools:
         return text
         
     @staticmethod
-    def word_search_and_split(text, word, length):
+    def word_search_and_split_text(text, word, length):
         '''
         function that search for a word in a text and split the text before and after the word for length characters
         '''
@@ -49,6 +50,18 @@ class TextTools:
         except:
             text = None
         return text
+    
+    @staticmethod
+    def word_search_and_split_front(text, word, num_words):
+        '''
+        function that search for a word in a text and split the text before the word for num_words
+        '''
+        text = text.lower()
+        word = word.lower()
+        # try:
+        word_index = text.index(word)
+        log(word_index)
+        
     
     @staticmethod
     def search_gender(text):
@@ -101,7 +114,7 @@ class TextTools:
         '''
         text = text.lower()
         
-        
+    
     
         
 
@@ -115,7 +128,7 @@ if __name__ == '__main__':
     
     # --[/]: test word_search_and_split function
     text = "This is HISTORY section. meta This is fsfklgnlkansfv IMPRESSION section."
-    result = TextTools.word_search_and_split(text, 'meta', 5)
+    result = TextTools.word_search_and_split_text(text, 'meta', 5)
     log(result)
     
     # --[/]: test search gender
@@ -131,3 +144,21 @@ if __name__ == '__main__':
     # --[/]: test search cancer type    TODO: add more test case
     text = "A 76-year-old woman with lung cancer was sent to evaluate bone metastasis"
     cancer_type = TextTools.search_cancer_type(text)
+    
+    # --[/]: test word_search_and_split_front
+    text = "no definite evidence of bone metastasis. degenerative change at lower cervical "
+    result = TextTools.word_search_and_split_front(text, 'metastasis', 5)   
+    log(result)
+    
+    test = "test test eiei babor ngae na ja"
+    log(len(test))
+    words = test.split()
+    log(words)
+    log(test)
+    log(len(words))
+    
+    position = test.index('ja' or 'na')
+    log(position)
+    # split the text before the word na for 3 words
+    text = test.split('na')[0]
+    log(text)

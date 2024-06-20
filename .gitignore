@@ -7,3 +7,7 @@ __pycache__/
 
 # Distribution / packaging
 *.egg-info/
+.DS_Store
+data/impression_text.csv
+data/impression_text.xlsx
+.vscode/settings.json
