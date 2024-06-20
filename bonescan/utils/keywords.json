@@ -11,7 +11,9 @@
             "bony metastasis",
             "bony metastases",
             "skeletal metastases",
-            "bone metastasis"
+            "bone metastasis",
+            "metastases,",
+            "metastasis,"
         ],
         "positive":[
             "progressive",
