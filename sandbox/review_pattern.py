@@ -25,18 +25,132 @@ if __name__ == '__main__':
     numCases = impressionDf.shape[0]
     
     # -- Step 3: loop check for the misspelled word "metastasis" in the impression text
+    # j = 0
+    # k = 0
+    # for case in range(500, 1000):
+    #     tmpText = impressionDf.loc[case, 'Impression']
+    #     tmpText = str(tmpText)
+    #     # if "metastasis" or "metastases" in tmpText:
+    #     if "evidence" in tmpText:
+    #         # log("Metastasis found in case ", j)
+    #         # log(tmpText)
+    #         # log("Evidence found in case ", j)
+    #         k = k + 1
+    #         log(k)
+    #     else:
+    #         # log(tmpText)
+    #         # log("Metastasis not found in case ", j)
+    #         log("Evidence not found in case ", j)
+    #         log(tmpText)
+    #         # break
+    #     j = j + 1
+    
+    # -- Step 4: check word "evidence" in the impression text; for defining no metastasis; "no" & "evidence" in the same sentence
     j = 0
-    for case in range(500, 1000):
+    k = 0
+    l = 0
+    for case in range(numCases):
         tmpText = impressionDf.loc[case, 'Impression']
         tmpText = str(tmpText)
-        if "metastasis" or "metastases" in tmpText:
-            log("Metastasis found in case ", j)
-            log(tmpText)
+        tempText = TextTools.word_search_and_split_both(tmpText, ['metastasis', 'metastases', 'bbone metastasis', 'bskeletal metastasis', 'metastatic'], 10)
+        # if "metastasis" or "metastases" in tmpText:
+        if "evidence" in tmpText:
+            if "no" in tmpText:
+                k = k + 1
+                pass
+                log(k)
+                log(tmpText)
+            # else:
+                # pass
+        # elif "cannot exclude" in tmpText:
+        #     k = k + 1
+        #     log(k)
+        #     log(tmpText)
+        #     pass
+        elif "no definite bone metastases" in tmpText:
+            k = k + 1
+            pass
+            # log(k)
         else:
-            log(tmpText)
-            log("Metastasis not found in case ", j)
-            break
+            # log(tempText)
+            # log(tmpText)
+            # check None
+            if tempText is None:
+                pass
+            else:
+                if "progressive" in tempText:
+                    l = l + 1
+                    # log(l)  
+                    # log(tempText)
+                    pass
+                elif "improvement" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "extensive" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "multiple" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "widespread" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "diffuse" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "new" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "bone metastasis at" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "bone metastases at" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "stable bone metastasis" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "bony metastases" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "skeletal metastases" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                elif "bony metastasis" in tempText:
+                    l = l + 1
+                    # log(l)
+                    # log(tempText)
+                    pass
+                else:
+                    # pass
+                    log(l)
+                    # log(tempText)
+            # log("Evidence not found in case ", j)
+            
+            # log(l, tempText)
         j = j + 1
-    
-    # -- Step 4:
-    
+        log(j)
+        log(k)
+        log(l)

@@ -36,19 +36,36 @@ class TextTools:
         return text
         
     @staticmethod
-    def word_search_and_split_both(text, word, length): # TODO: refactor this function
+    def word_search_and_split_both(text: str, wordLst: list, num_words: int): # TODO: refactor this function
         '''
         function that search for a word in a text and split the text before and after the word for length characters
         '''
         text = text.lower()
-        word = word.lower()
-        try:
-            index = text.index(word)
-            word_length = len(word)
-            text = text[index-length:index+word_length+length]
-        except:
-            text = None
-        return text
+        # convert text to list of words
+        words = text.split()
+        # handle case with '.' at the end of the word
+        for i in range(len(words)):
+            if '.' in words[i]:
+                words[i] = words[i].replace('.', '')
+            if ' ' in words[i]:
+                words[i] = words[i].replace(' ', '')
+        for i in range(len(wordLst)):
+            tmpWord = str(wordLst[i])
+            if tmpWord in words:
+                index = words.index(wordLst[i])
+                frontWordsLst = []
+                try:
+                    if index - num_words > 0:
+                        frontWordsLst = words[index-num_words:index + num_words]
+                    else:
+                        frontWordsLst = words[:index + num_words]
+                except:
+                    frontWordsLst = words[:index + num_words]
+                splitText = ' '.join(frontWordsLst)
+                return splitText
+            else:
+                pass
+        return None
     
     @staticmethod
     def word_search_and_split_front(text: str, wordLst: list, num_words: int):

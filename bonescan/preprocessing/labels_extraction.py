@@ -11,26 +11,37 @@
 # -- Data Structure: list of dictionaries
 # note: key & value = snake_case
 # each dictionary contains the following
+#       "index": int,
 #       "gender": "Male" or "Female",
 #       "age": int,
 #       "cancer_type": str
-#       "metastasis": "True" or "False",
-#       "degenerative_infection": "True" or "False",
-#       "bone_fracture": "True" or "False"
+#       "metastasis": "Positive" / "Negative" / "Not Sure,
+#       "degenerative_infection": "Positive" / "Negative" / "Not Sure,
+#       "bone_fracture": "Positive" / "Negative" / "Not Sure,
 
 import pandas as pd
 from bonescan.utils.common import log
 from bonescan.utils.texttools import TextTools
+import json
 
 # --TODO: improve efficiency of searching properties
+
+# class result(Enum):
+#     NO_METASTASIS = 1
+#     NOT_SURE = 2
+#     METASTASIS = 3
 
 class LabelExtraction:
     def __init__(self, reportFilePath, reportFileType):
         self.__reportFilePath = reportFilePath
         self.__reportFileType = reportFileType
         self.__reportDf = self.read_report_file()
-        self.__numSamples = 1
+        self.__numCase = self.__reportDf.shape[0]
         self.__reportPropList = []
+        self.__numSplitWords = 15
+        with open('./bonescan/utils/keywords.json') as f:
+            temp = json.load(f)
+            self.__kwBoneMetastasis = temp['kw_bone_metastasis']
             
     def read_report_file(self):
         try: 
@@ -43,6 +54,7 @@ class LabelExtraction:
     
     def get_properties_dict_template(self):
         reportPropDict = {
+            "index": None,
             "gender": None,
             "age": None,
             "cancer_type": None,
@@ -51,15 +63,36 @@ class LabelExtraction:
             "bone_fracture": None
         }
         return reportPropDict
-
-    def search_metastasis(self, text):
-        pass
     
-    def search_degenerative_infection(self, text):
-        pass
-    
-    def search_bone_fracture(self, text):
-        pass
+    def check_metastasis(self, text = "Improvement of bony metastasis , however bony metastasis remained at right upper cervical spine, thoracic spines, right lateral aspect of 6th, 7th ribs, sacrum, right iliac bone, pubic symphysis, right femoral head and bilateral upper femurs"):
+        '''
+        check for bone metastasis in the text; input test must be split between "IMPRESSION" and "end of report"
+        '''
+        i = 0
+        numNegative = 0
+        numPositive = 0
+        text = text.lower()
+        # [ ]: split text before and after the related word, key == 'main' in self.__kwBoneMetastasis
+        splitedText = TextTools.word_search_and_split_both(text, self.__kwBoneMetastasis['main'], self.__numSplitWords)
+        log(splitedText)
+        # [ ]: check for all keys in self.__kwBoneMetastasis['___']
+        for key in self.__kwBoneMetastasis['negative']:
+            if key in splitedText:
+                log('Negative case')
+                return "negative"
+        
+        for key in self.__kwBoneMetastasis['positive']:
+            if key in splitedText:
+                log('Positive case')
+                return "positive"
+        log('Not sure')
+        return "not sure"
+        
+       
+            
+            
+        
+        
     
     def extract_properties(self):
         if self.__reportDf is None:
@@ -80,45 +113,27 @@ class LabelExtraction:
             tmpCancerType = TextTools.search_cancer_type(historyText)
             log(tmpCancerType)
             impressionText = TextTools.split_text(tempText, 'IMPRESSION', 'end of report')
-            log(impressionText)
-            
-        # pass
-        
+            log(impressionText)        
     
     def get_report_df(self):
         return self.__reportDf
     
 
 if __name__ == '__main__':
+    # --[/]: test json file
+    # with open('./bonescan/utils/keywords.json') as f:
+    #     keysDict = json.load(f)
+    # log(keysDict)
+    # key_met = keysDict['kw_bone_metastasis']
+    # log(key_met)
+    
     # --[/]: test open file
     reportFilePath = './data/BoneReport_2018.xlsx'
     reportFileType = 'xlsx'
     labelExtraction = LabelExtraction(reportFilePath, reportFileType)
-    reportDf = labelExtraction.get_report_df()
+    labelExtraction.check_metastasis()
+    # reportDf = labelExtraction.get_report_df()
     
-    # --[ ]: test split_text function in extract_properties
-    labelExtraction.extract_properties()
+    # --[/]: test check metastasis
+    #   --[ ]: split before and after the related word
     
-    # count = 0
-    # for i in range(3802):
-    #     tmp = temp.loc[i, 'Report']
-    #     # split the text after IMPRESSION
-    #     text_imp = tmp.split('IMPRESSION')[1]
-    #     log(text_imp)
-    #     print(type(text_imp))
-    #     # search for "no definite evidence of metastasis" in IMPRESSION section
-    #     if ('metastasis' in text_imp):
-    #         count += 1
-        
-    # print(count)
-    
-    # temp = ,
-        
-    # --[ ]: test get_properties_dict_template
-    
-    
-    
-    
-    
-        
-        

@@ -1,0 +1,37 @@
+{
+    "project_name": "bone-scan",
+    "kw_bone_metastasis": {
+        "main":[
+            "metastasis",
+            "metastases",
+            "bbone metastasis",
+            "bone metastases",
+            "bskeletal metastasis",
+            "metastatic",
+            "bony metastasis",
+            "bony metastases",
+            "skeletal metastases",
+            "bone metastasis"
+        ],
+        "positive":[
+            "progressive",
+            "improvement",
+            "extensive",
+            "multiple",
+            "widespread",
+            "diffuse",
+            "new",
+            "bone metastases at",
+            "stable bone metastasis",
+            "bony metastases",
+            "skeletal metastases",
+            "bony metastasis"
+        ],
+        "negative": [
+            "no evidence",
+            "no definite evidence",
+            "no definite bone metastases",
+            "no specific evidence"
+        ]
+    }
+}
