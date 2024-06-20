@@ -27,8 +27,7 @@ class TextTools:
                         text1 = "impressoin"
         #TODO: Raise if not found -> show which index is not found
         if (text2.lower() == "end of report"):
-            # split text between text1 and end of text
-            text = text.split(text1)[1]   
+            text = text.split(text1)[1]               # split text between text1 and end of text
         else:     
             try:
                 text = text.split(text1)[1].split(text2)[0]
@@ -37,7 +36,7 @@ class TextTools:
         return text
         
     @staticmethod
-    def word_search_and_split_text(text, word, length):
+    def word_search_and_split_both(text, word, length): # TODO: refactor this function
         '''
         function that search for a word in a text and split the text before and after the word for length characters
         '''
@@ -52,15 +51,36 @@ class TextTools:
         return text
     
     @staticmethod
-    def word_search_and_split_front(text, word, num_words):
+    def word_search_and_split_front(text: str, wordLst: list, num_words: int):
         '''
         function that search for a word in a text and split the text before the word for num_words
         '''
         text = text.lower()
-        word = word.lower()
-        # try:
-        word_index = text.index(word)
-        log(word_index)
+        # convert text to list of words
+        words = text.split()
+        # handle case with '.' at the end of the word
+        for i in range(len(words)):
+            if '.' in words[i]:
+                words[i] = words[i].replace('.', '')
+            if ' ' in words[i]:
+                words[i] = words[i].replace(' ', '')
+        for i in range(len(wordLst)):
+            tmpWord = str(wordLst[i])
+            if tmpWord in words:
+                index = words.index(wordLst[i])
+                frontWordsLst = []
+                try:
+                    if index - num_words > 0:
+                        frontWordsLst = words[index-num_words:index]
+                    else:
+                        frontWordsLst = words[:index]
+                except:
+                    frontWordsLst = words[:index]
+                splitText = ' '.join(frontWordsLst)
+                return splitText
+            else:
+                pass
+        return None
         
     
     @staticmethod
@@ -110,17 +130,22 @@ class TextTools:
     @staticmethod
     def search_is_metastasis(text):
         '''
-        function that search for metastasis in a text (IMPRESSION section)
+        function that search for metastasis in a text (IMPRESSION section) return in 3 classes
+        - no metastasis
+        - not sure
+        - metastasis
         '''
         text = text.lower()
-        
-    
-    
-        
+        spitedText = TextTools.word_search_and_split_front(text, ['metastasis', 'metastases'], 6)
+        log(spitedText)
 
 
 
 if __name__ == '__main__':
+    # ------------------- test cases: other text functions -------------------
+    # --[/]: search_is_metastasis
+    
+    # ------------------- test cases: basic text functions -------------------
     # --[ ]: test split_text function
     text = "This is HISTORY section. This is fsfklgnlkansfv IMPRESSION sectionuhhkjkjjk;j;k;."
     result = TextTools.split_text(text, 'HISTORY', 'END OF REPORT')
@@ -128,7 +153,7 @@ if __name__ == '__main__':
     
     # --[/]: test word_search_and_split function
     text = "This is HISTORY section. meta This is fsfklgnlkansfv IMPRESSION section."
-    result = TextTools.word_search_and_split_text(text, 'meta', 5)
+    result = TextTools.word_search_and_split_both(text, 'meta', 5)
     log(result)
     
     # --[/]: test search gender
@@ -147,18 +172,19 @@ if __name__ == '__main__':
     
     # --[/]: test word_search_and_split_front
     text = "no definite evidence of bone metastasis. degenerative change at lower cervical "
-    result = TextTools.word_search_and_split_front(text, 'metastasis', 5)   
+    result = TextTools.word_search_and_split_front(text, ['metastasis', 'metastases'], 6)
     log(result)
-    
-    test = "test test eiei babor ngae na ja"
-    log(len(test))
-    words = test.split()
-    log(words)
-    log(test)
-    log(len(words))
-    
-    position = test.index('ja' or 'na')
-    log(position)
-    # split the text before the word na for 3 words
-    text = test.split('na')[0]
-    log(text)
+        # --[/]: test word_search_and_split_front: case big number; more than index 
+    result_1 = TextTools.word_search_and_split_front(text, ['metastasis', 'metastases'], 100)
+    log(result_1)
+        # --[/]: test word_search_and_split_front: case small number; less than index
+    result_2 = TextTools.word_search_and_split_front(text, ['metastasis', 'metastases'], 1)
+    log(result_2)
+        # --[/]: test word_search_and_split_front: case no word found
+    result_3 = TextTools.word_search_and_split_front(text, ['metastatic'], 6)
+    log(result_3)
+        # --[/]: test word_search_and_split_front: handle case with '.' at the end of the word
+    text = "no definite evidence of bone metastasis. degenerative change at lower cervical."
+    result_4 = TextTools.word_search_and_split_front(text, ['metastasis', 'metastases'], 6)
+    log(result_4)
+        # --[ ]: test word_search_and_split_front: None input; user should not input None
