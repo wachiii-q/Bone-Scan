@@ -42,6 +42,7 @@ class LabelExtraction:
         with open('./bonescan/utils/keywords.json') as f:
             temp = json.load(f)
             self.__kwBoneMetastasis = temp['kw_bone_metastasis']
+            self.__kwBoneReport = temp["kw_bone_report"]
             
     def read_report_file(self):
         try: 
@@ -59,7 +60,7 @@ class LabelExtraction:
             "age": None,
             "cancer_type": None,
             "metastasis": None,
-            "degenerative_infection": None,
+            "degenerative": None,
             "bone_fracture": None
         }
         return reportPropDict
@@ -69,27 +70,61 @@ class LabelExtraction:
         check for bone metastasis in the text; input test must be split between "IMPRESSION" and "end of report"
         '''
         if text is None:
-            log('Error: text is empty')
+            print('<check_metastasis> Error: text is None')
             return None
         # [ ]: split text before and after the related word, key == 'main' in self.__kwBoneMetastasis
         splitedText = TextTools.word_search_and_split_both(text, self.__kwBoneMetastasis['main'], self.__numSplitWords)
         # [ ]: handle case when no word found
+        # log(splitedText)
         if splitedText is None:
-            log("No word found in the text")
+            log(text)
+            log(splitedText)
+            print("No word found in the text")
             return "not sure"
+            # return "not sure"
         text = text.lower()
         # [ ]: check for all keys in self.__kwBoneMetastasis['___']
         for key in self.__kwBoneMetastasis['negative']:
             if key in splitedText:
-                log('Negative case')
+                # log('Negative case')
                 return "negative"
+            if "no" in splitedText:
+                if "evidence" in splitedText:
+                    # log('Negative case')
+                    return "negative"
         
         for key in self.__kwBoneMetastasis['positive']:
             if key in splitedText:
-                log('Positive case')
+                # log('Positive case')
                 return "positive"
-        log('Not sure')
+        # log('Not sure')
         return "not sure"
+    
+    def check_degenerative_infection(self, text):
+        '''
+        check for degenerative infection in the text; input test must be split between "IMPRESSION" and "end of report"
+        '''
+        # TODO: run check for misspelling, positive and negative cases
+        if text is None:
+            print('<check_degenerative_infection> Error: text is None')
+            return None
+        if "degenerative" in text:
+            # log(text, "degenerative found")
+            return "positive"
+        return "negative"
+    
+    def check_bone_fracture(self, text):
+        '''
+        check for bone fracture in the text; input test must be split between "IMPRESSION" and "end of report"
+        '''
+        # TODO: run check for misspelling, positive and negative cases
+        if text is None:
+            print('<check_bone_fracture> Error: text is None')
+            return None
+        if "fracture" in text:
+            # log(text, "fracture found")
+            return "positive"
+        return "negative"    
     
     def extract_properties(self):
         if self.__reportDf is None:
@@ -98,56 +133,97 @@ class LabelExtraction:
         i = 0
         numMetNegative = 0
         numMetPositive = 0
+        numMetNotSure = 0
+        numDegenerative = 0
+        numFracture = 0
         for i in range(self.__numCases):
             # --[ ]: get history section
+            tmpDictResult = self.get_properties_dict_template()
             tempText = self.__reportDf.loc[i, 'Report']
             tempText = str(tempText)
-            log(tempText)
-            historyText = TextTools.split_text(tempText, 'HISTORY', 'FINDINGS')
+            historyText = TextTools.split_text(tempText, self.__kwBoneReport['history'], self.__kwBoneReport['findings'])
             # --[ ]: scan for gender: can be found in HISTORY section
-            log(historyText)
             tmpGender = TextTools.search_gender(historyText)
-            log(tmpGender)
             # --[ ]: scan for age: can be found in HISTORY section
             tmpAge = TextTools.search_age(historyText)
-            log(tmpAge)
             # --[ ]: scan for cancer type: can be found in HISTORY section
             tmpCancerType = TextTools.search_cancer_type(historyText)
-            log(tmpCancerType)
-            impressionText = TextTools.split_text(tempText, 'IMPRESSION', 'end of report')
-            log(impressionText)   
+            impressionText = TextTools.split_text(tempText, self.__kwBoneReport['impression'], self.__kwBoneReport['end of report'])
             # --[ ]: check for metastasis
             tmpMetastasis = self.check_metastasis(impressionText)
             if tmpMetastasis == "negative":
                 numMetNegative = numMetNegative + 1
+                i = i + 1
+                pass
             elif tmpMetastasis == "positive":
                 numMetPositive = numMetPositive + 1
+                i = i + 1
+                pass
+            elif tmpMetastasis == "not sure":
+                numMetNotSure = numMetNotSure + 1
+                i = i + 1
+                pass
             elif tmpMetastasis == None:
-                log('Error: metastasis is None')
-                log(impressionText, i)
-            log(tmpMetastasis)
-            log(i)
+                log('no evidence of metastasis found in the text')
+            # --[ ]: check degenerative infection
+            tmpDegenerative = self.check_degenerative_infection(impressionText)
+            if tmpDegenerative == "positive":
+                numDegenerative = numDegenerative + 1
+            tmpFracture = self.check_bone_fracture(impressionText)
+            if tmpFracture == "positive":
+                numFracture = numFracture + 1
+            tmpDictResult["index"] = i
+            tmpDictResult["gender"] = tmpGender
+            tmpDictResult["age"] = tmpAge
+            tmpDictResult["cancer_type"] = tmpCancerType
+            tmpDictResult["metastasis"] = tmpMetastasis
+            tmpDictResult["degenerative"] = tmpDegenerative
+            tmpDictResult["bone_fracture"] = tmpFracture
+            self.__reportPropList.append(tmpDictResult)
             i = i + 1
+        log(numMetNegative, numMetPositive, numMetNotSure, numDegenerative, numFracture)
     
     def get_report_df(self):
         return self.__reportDf
     
+    def get_reportPropList(self):
+        return self.__reportPropList
+    
+    def get_reportPropList_df(self):
+        return pd.DataFrame(self.__reportPropList)
+    
 
 if __name__ == '__main__':
+    # --[/]: test open file
+    reportFilePath = './data/BoneReport_2018.xlsx'
+    reportFileType = 'xlsx'
+    labelExtraction = LabelExtraction(reportFilePath, reportFileType)
+    labelExtraction.extract_properties()
+    # log(labelExtraction.get_reportPropList())
+    log(labelExtraction.get_reportPropList_df())
+    # save to csv file
+    labelExtraction.get_reportPropList_df().to_csv('./data/reportPropList.csv', index=False)
+    
+    # save add to bone report file
+    reportDf = labelExtraction.get_report_df()
+    reportPropDf = labelExtraction.get_reportPropList_df()
+    
+    # merge two dataframes
+    reportDf['index'] = reportDf.index
+    reportPropDf['index'] = reportPropDf.index
+    reportDf = pd.merge(reportDf, reportPropDf, on='index', how='left')
+    reportDf.drop(columns=['index'], inplace=True)
+    reportDf.to_csv('./data/BoneReport_2018_with_prop.csv', index=False)
+    
+        
+    # reportDf = labelExtraction.get_report_df()
+    
+    # --[/]: test check metastasis
+    #   --[ ]: split before and after the related word
+    
     # --[/]: test json file
     # with open('./bonescan/utils/keywords.json') as f:
     #     keysDict = json.load(f)
     # log(keysDict)
     # key_met = keysDict['kw_bone_metastasis']
     # log(key_met)
-    
-    # --[/]: test open file
-    reportFilePath = './data/BoneReport_2018.xlsx'
-    reportFileType = 'xlsx'
-    labelExtraction = LabelExtraction(reportFilePath, reportFileType)
-    labelExtraction.extract_properties()
-    # reportDf = labelExtraction.get_report_df()
-    
-    # --[/]: test check metastasis
-    #   --[ ]: split before and after the related word
-    

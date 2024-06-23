@@ -1,5 +1,45 @@
 {
     "project_name": "bone-scan",
+    "kw_bone_report":{
+        "history": [
+            "history",
+            "histor",
+            "historya",
+            "historyknown",
+            "mdp)",
+            "historty"
+        ],
+        "findings": [
+            "findings",
+            "finding",
+            "findigns",
+            "fiondings",
+            "findiungs",
+            "finindgs",
+            "findingsthe",
+            "findingthe",
+            "findingsincreased",
+            "lfindings",
+            "finindg",
+            "fidnings",
+            "ffindings",
+            "fingings",
+            "findingsthis",
+            "findimg",
+            "fingdings",
+            "findingsas"
+        ],
+        "impression": [
+            "impression",
+            "impressions",
+            "impresions",
+            "impresssion",
+            "impressoin"
+        ],
+        "end of report": [
+            "end of report"
+        ]
+    },
     "kw_bone_metastasis": {
         "main":[
             "metastasis",
@@ -13,7 +53,10 @@
             "skeletal metastases",
             "bone metastasis",
             "metastases,",
-            "metastasis,"
+            "metastasis,",
+            "metastsis",
+            "metastasis;",
+            "metasatsis"
         ],
         "positive":[
             "progressive",
@@ -33,7 +76,15 @@
             "no evidence",
             "no definite evidence",
             "no definite bone metastases",
-            "no specific evidence"
+            "no specific evidence",
+            "no evidence of bony metastasis"
         ]
-    }
+    },
+    "degenerative": [
+        "degenerative",
+        "degenerative changes"
+    ],
+    "fracture": [
+        "fracture"
+    ]
 }

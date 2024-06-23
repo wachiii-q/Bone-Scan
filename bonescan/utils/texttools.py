@@ -9,38 +9,86 @@ class TextTools:
         pass
     
     @staticmethod
-    def split_text(text, text1, text2):
+    # def split_text(text, text1, text2):
+    #     '''
+    #     function that split the text between "text1" and "text2"
+    #     '''
+    #     text = text.lower()
+    #     text1 = text1.lower()
+    #     text2 = text2.lower()
+    #     # handling of misspelled words TODO: make it more feasible; json key
+    #     if "histor" in text:
+    #         text1 = "histor"
+    #     if text1 not in text:
+    #         text1 = "impresions"
+    #         if text1 not in text:
+    #             text1 = "impreesion"
+    #             if text1 not in text:
+    #                 text1 = "impresssion"
+    #                 if text1 not in text:
+    #                     text1 = "impressoin"
+    #     #TODO: Raise if not found -> show which index is not found
+    #     if (text2 == "end of report"):
+    #         text = text.split(text1)[1]               # split text between text1 and end of text
+    #     else:     
+    #         try:
+    #             if ("history" not in text) and ("histor" not in text):
+    #                 # split all before text2
+    #                 text1 = "bone"
+    #                 text = text.split(text1)[1].split(text2)[0]
+    #                 return text
+    #             text = text.split(text1)[1].split(text2)[0]
+    #         except:
+    #             text = None
+    #     return text
+    
+    @staticmethod
+    def split_text(text: str, headWordLst: list, EndWordLst: list):
         '''
-        function that split the text between "text1" and "text2"
+        function that split the text between headWordLst and EndWordLst where both are lower case
         '''
+        # --[ ]: convert to lower case
         text = text.lower()
-        text1 = text1.lower()
-        text2 = text2.lower()
-        # handling of misspelled words TODO: make it more feasible; json key
-        if "histor" in text:
-            text1 = "histor"
-        if text1 not in text:
-            text1 = "impresions"
-            if text1 not in text:
-                text1 = "impreesion"
-                if text1 not in text:
-                    text1 = "impresssion"
-                    if text1 not in text:
-                        text1 = "impressoin"
-        #TODO: Raise if not found -> show which index is not found
-        if (text2 == "end of report"):
-            text = text.split(text1)[1]               # split text between text1 and end of text
-        else:     
-            try:
-                if ("history" not in text) and ("histor" not in text):
-                    # split all before text2
-                    text1 = "bone"
-                    text = text.split(text1)[1].split(text2)[0]
-                    return text
-                text = text.split(text1)[1].split(text2)[0]
-            except:
-                text = None
-        return text
+        index1 = None
+        index2 = None
+        # --[ ]: convert string to list of word
+        textToWordLst = text.split()
+        # --[ ]: if found '.' or ':' at the end of the word, remove it
+        for i in range(len(textToWordLst)):
+            if '.' in textToWordLst[i]:
+                textToWordLst[i] = textToWordLst[i].replace('.', '')
+            if ':' in textToWordLst[i]:
+                textToWordLst[i] = textToWordLst[i].replace(':', '')
+        # --[ ]: search index of headWordLst that appear in textToWordLst
+        for i in range(len(headWordLst)):
+            tempWord = str(headWordLst[i])
+            if tempWord in textToWordLst:
+                index1 = textToWordLst.index(tempWord)
+                break
+            else:
+                pass
+        # --[ ]: search index of EndWordLst that appear in textToWordLst
+        for i in range(len(EndWordLst)):
+            tempWord = str(EndWordLst[i])
+            if tempWord in textToWordLst:
+                index2 = textToWordLst.index(tempWord)
+                break
+            elif tempWord == "end of report":
+                index2 = "end of report"
+                break
+            else:
+                pass
+        # --[ ]: split text from index of headWordLst and index of EndWordLst
+        newTextLst = []
+        if (index1 is not None) and (index2 is not None):
+            if index2 == "end of report":
+                newTextLst = textToWordLst[index1:]
+                newText = ' '.join(newTextLst)
+                return newText
+            else:
+                newTextLst = textToWordLst[index1:index2]
+                newText = ' '.join(newTextLst)
+                return newText
         
     @staticmethod
     def word_search_and_split_both(text: str, wordLst: list, num_words: int): # TODO: refactor this function
@@ -48,9 +96,9 @@ class TextTools:
         function that search for a word in a text and split the text before and after the word for length characters
         '''
         text = text.lower()
-        # convert text to list of words
+        # --[ ]: convert text to list of words
         words = text.split()
-        # handle case with '.' at the end of the word
+        # --[ ]: handle case with '.' at the end of the word
         for i in range(len(words)):
             if '.' in words[i]:
                 words[i] = words[i].replace('.', '')
@@ -80,9 +128,9 @@ class TextTools:
         function that search for a word in a text and split the text before the word for num_words
         '''
         text = text.lower()
-        # convert text to list of words
+        # --[ ]: convert text to list of words
         words = text.split()
-        # handle case with '.' at the end of the word
+        # --[ ]: handle case with '.' at the end of the word
         for i in range(len(words)):
             if '.' in words[i]:
                 words[i] = words[i].replace('.', '')
@@ -112,7 +160,6 @@ class TextTools:
         '''
         function that search for gender in a text (HISTORY section)
         '''
-        log(text)
         text = text.lower()
         if ("woman" or "female" or "women") in text:
             gender = "female"
@@ -145,30 +192,19 @@ class TextTools:
         '''
         text = text.lower()
         if ("cancer" or "carcinoma") in text:
-            # get word before cancer; characters until found space
             cancerType = text.split("cancer")[0].split()[-1]
-            log(cancerType)
+            # log(cancerType)
             return cancerType
         else:
             return "not defined"
-        
-    @staticmethod
-    def search_is_metastasis(text):
-        '''
-        function that search for metastasis in a text (IMPRESSION section) return in 3 classes
-        - no metastasis
-        - not sure
-        - metastasis
-        '''
-        text = text.lower()
-        spitedText = TextTools.word_search_and_split_front(text, ['metastasis', 'metastases'], 6)
-        log(spitedText)
-
 
 
 if __name__ == '__main__':
     # ------------------- test cases: other text functions -------------------
-    # --[/]: search_is_metastasis
+    # --[ ]: test split_text function
+    text = "This is HISTORY section. This is fsfklgnlkansfv IMPRESSION sectionuhhkjkjjk;j;k;."
+    result_split = TextTools.split_text(text, 'HISTORY', 'IMPRESSION')
+    log(result_split)
     
     # ------------------- test cases: basic text functions -------------------
     # --[ ]: test split_text function
