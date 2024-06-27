@@ -45,6 +45,9 @@ class LabelExtraction:
             self.__kwBoneReport = temp["kw_bone_report"]
             
     def read_report_file(self):
+        '''
+        function to read the report file, and return a dataframe to private variable __reportDf
+        '''
         try: 
             if self.__reportFileType == 'xlsx':
                 df = pd.read_excel(self.__reportFilePath)
@@ -54,6 +57,9 @@ class LabelExtraction:
         return df
     
     def get_properties_dict_template(self):
+        '''
+        function to return a dictionary template for properties of the report
+        '''
         reportPropDict = {
             "index": None,
             "gender": None,
@@ -61,6 +67,7 @@ class LabelExtraction:
             "cancer_type": None,
             "metastasis": None,
             "degenerative": None,
+            "infection": None,
             "bone_fracture": None
         }
         return reportPropDict
@@ -100,7 +107,7 @@ class LabelExtraction:
         # log('Not sure')
         return "not sure"
     
-    def check_degenerative_infection(self, text):
+    def check_degenerative(self, text):
         '''
         check for degenerative infection in the text; input test must be split between "IMPRESSION" and "end of report"
         '''
@@ -110,6 +117,18 @@ class LabelExtraction:
             return None
         if "degenerative" in text:
             # log(text, "degenerative found")
+            return "positive"
+        return "negative"
+    
+    def check_infection(self, text):
+        '''
+        check for infection in the text; input test must be split between "IMPRESSION" and "end of report"
+        '''
+        #TODO: run check for misspelling, positive and negative cases
+        if text is None:
+            print('<check_infection> Error: text is None')
+            return None
+        if "infection" in text:
             return "positive"
         return "negative"
     
@@ -127,6 +146,9 @@ class LabelExtraction:
         return "negative"    
     
     def extract_properties(self):
+        '''
+        function to extract properties of the report
+        '''
         if self.__reportDf is None:
             log('Error: report file is empty')
             return None
@@ -136,6 +158,7 @@ class LabelExtraction:
         numMetNotSure = 0
         numDegenerative = 0
         numFracture = 0
+        numInfection = 0
         for i in range(self.__numCases):
             # --[ ]: get history section
             tmpDictResult = self.get_properties_dict_template()
@@ -166,10 +189,13 @@ class LabelExtraction:
             elif tmpMetastasis == None:
                 log('no evidence of metastasis found in the text')
             # --[ ]: check degenerative infection
-            tmpDegenerative = self.check_degenerative_infection(impressionText)
+            tmpDegenerative = self.check_degenerative(impressionText)
             if tmpDegenerative == "positive":
                 numDegenerative = numDegenerative + 1
             tmpFracture = self.check_bone_fracture(impressionText)
+            tmpInfection = self.check_infection(impressionText)
+            if tmpInfection == "positive":
+                numInfection = numInfection + 1
             if tmpFracture == "positive":
                 numFracture = numFracture + 1
             tmpDictResult["index"] = i
@@ -178,18 +204,30 @@ class LabelExtraction:
             tmpDictResult["cancer_type"] = tmpCancerType
             tmpDictResult["metastasis"] = tmpMetastasis
             tmpDictResult["degenerative"] = tmpDegenerative
+            tmpDictResult["infection"] = tmpInfection
             tmpDictResult["bone_fracture"] = tmpFracture
             self.__reportPropList.append(tmpDictResult)
             i = i + 1
-        log(numMetNegative, numMetPositive, numMetNotSure, numDegenerative, numFracture)
+        log(self.__reportPropList)
+        log(tmpDictResult)
+        log(numMetNegative, numMetPositive, numMetNotSure, numDegenerative, numInfection, numFracture)
     
     def get_report_df(self):
+        '''
+        return the report dataframe
+        '''
         return self.__reportDf
     
     def get_reportPropList(self):
+        '''
+        return the list of properties dict of the report
+        '''
         return self.__reportPropList
     
     def get_reportPropList_df(self):
+        '''
+        return the list of properties dict of the report in dataframe format
+        '''
         return pd.DataFrame(self.__reportPropList)
     
 

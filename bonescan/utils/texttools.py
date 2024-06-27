@@ -9,40 +9,6 @@ class TextTools:
         pass
     
     @staticmethod
-    # def split_text(text, text1, text2):
-    #     '''
-    #     function that split the text between "text1" and "text2"
-    #     '''
-    #     text = text.lower()
-    #     text1 = text1.lower()
-    #     text2 = text2.lower()
-    #     # handling of misspelled words TODO: make it more feasible; json key
-    #     if "histor" in text:
-    #         text1 = "histor"
-    #     if text1 not in text:
-    #         text1 = "impresions"
-    #         if text1 not in text:
-    #             text1 = "impreesion"
-    #             if text1 not in text:
-    #                 text1 = "impresssion"
-    #                 if text1 not in text:
-    #                     text1 = "impressoin"
-    #     #TODO: Raise if not found -> show which index is not found
-    #     if (text2 == "end of report"):
-    #         text = text.split(text1)[1]               # split text between text1 and end of text
-    #     else:     
-    #         try:
-    #             if ("history" not in text) and ("histor" not in text):
-    #                 # split all before text2
-    #                 text1 = "bone"
-    #                 text = text.split(text1)[1].split(text2)[0]
-    #                 return text
-    #             text = text.split(text1)[1].split(text2)[0]
-    #         except:
-    #             text = None
-    #     return text
-    
-    @staticmethod
     def split_text(text: str, headWordLst: list, EndWordLst: list):
         '''
         function that split the text between headWordLst and EndWordLst where both are lower case

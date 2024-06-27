@@ -13,3 +13,5 @@ data/impression_text.xlsx
 .vscode/settings.json
 data/BoneReport_2018_with_prop.csv
 data/reportPropList.csv
+data/*
+sandbox/*
