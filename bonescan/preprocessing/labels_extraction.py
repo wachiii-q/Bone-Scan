@@ -62,6 +62,8 @@ class LabelExtraction:
         '''
         reportPropDict = {
             "index": None,
+            "HN": None,
+            "date": None,
             "gender": None,
             "age": None,
             "cancer_type": None,
@@ -72,7 +74,7 @@ class LabelExtraction:
         }
         return reportPropDict
     
-    def check_metastasis(self, text = "Improvement of bony metastasis , however bony metastasis remained at right upper cervical spine, thoracic spines, right lateral aspect of 6th, 7th ribs, sacrum, right iliac bone, pubic symphysis, right femoral head and bilateral upper femurs"):
+    def check_metastasis(self, text):
         '''
         check for bone metastasis in the text; input test must be split between "IMPRESSION" and "end of report"
         '''
@@ -88,7 +90,6 @@ class LabelExtraction:
             log(splitedText)
             print("No word found in the text")
             return "not sure"
-            # return "not sure"
         text = text.lower()
         # [ ]: check for all keys in self.__kwBoneMetastasis['___']
         for key in self.__kwBoneMetastasis['negative']:
@@ -162,9 +163,18 @@ class LabelExtraction:
         for i in range(self.__numCases):
             # --[ ]: get history section
             tmpDictResult = self.get_properties_dict_template()
+            # --[ ]: get HN and date
+            tempHN = self.__reportDf.loc[i, 'PID']
+            tempHN = str(tempHN)
+            tempDate = self.__reportDf.loc[i, 'InsertDate']
             tempText = self.__reportDf.loc[i, 'Report']
+            log(tempText)
             tempText = str(tempText)
             historyText = TextTools.split_text(tempText, self.__kwBoneReport['history'], self.__kwBoneReport['findings'])
+            # handle case when historyText is None
+            if historyText is None:
+                print('Error: historyText is None')
+                continue
             # --[ ]: scan for gender: can be found in HISTORY section
             tmpGender = TextTools.search_gender(historyText)
             # --[ ]: scan for age: can be found in HISTORY section
@@ -199,6 +209,8 @@ class LabelExtraction:
             if tmpFracture == "positive":
                 numFracture = numFracture + 1
             tmpDictResult["index"] = i
+            tmpDictResult["HN"] = tempHN
+            tmpDictResult["date"] = tempDate
             tmpDictResult["gender"] = tmpGender
             tmpDictResult["age"] = tmpAge
             tmpDictResult["cancer_type"] = tmpCancerType
@@ -232,26 +244,41 @@ class LabelExtraction:
     
 
 if __name__ == '__main__':
-    # --[/]: test open file
-    reportFilePath = './data/BoneReport_2018.xlsx'
+    # -- [/]: check file
+    # path = './data/report/Bone_2024.xlsx'
+    # fileType = 'xlsx'
+    # # open file
+    # df = pd.read_excel(path)
+    # df_report = df['Report'][0]
+    # df = df.dropna(subset=['Report'])
+    # # if df_report is None:
+    # log(df)
+    # log(df["Report"])
+    # # save to xlsx
+    # df.to_excel('./data/report/Modified_Bone_2024.xlsx', index=False)
+    # log(df.head())    
+    
+    # --[/]: test label extraction
+    reportFilePath = './data/report/Modified_Bone_2024.xlsx'
     reportFileType = 'xlsx'
     labelExtraction = LabelExtraction(reportFilePath, reportFileType)
     labelExtraction.extract_properties()
-    # log(labelExtraction.get_reportPropList())
     log(labelExtraction.get_reportPropList_df())
-    # save to csv file
-    labelExtraction.get_reportPropList_df().to_csv('./data/reportPropList.csv', index=False)
+    labelExtraction.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2024.csv', index=False)
+
+    # log(labelExtraction.get_report_df().groupby('cancer_type').count())
+    # labelExtraction.get_reportPropList_df().to_csv('./data/reportPropList.csv', index=False)
     
     # save add to bone report file
-    reportDf = labelExtraction.get_report_df()
-    reportPropDf = labelExtraction.get_reportPropList_df()
+    # reportDf = labelExtraction.get_report_df()
+    # reportPropDf = labelExtraction.get_reportPropList_df()
     
     # merge two dataframes
-    reportDf['index'] = reportDf.index
-    reportPropDf['index'] = reportPropDf.index
-    reportDf = pd.merge(reportDf, reportPropDf, on='index', how='left')
-    reportDf.drop(columns=['index'], inplace=True)
-    reportDf.to_csv('./data/BoneReport_2018_with_prop.csv', index=False)
+    # reportDf['index'] = reportDf.index
+    # reportPropDf['index'] = reportPropDf.index
+    # reportDf = pd.merge(reportDf, reportPropDf, on='index', how='left')
+    # reportDf.drop(columns=['index'], inplace=True)
+    # reportDf.to_csv('./data/BoneReport_2018_with_prop.csv', index=False)
     
         
     # reportDf = labelExtraction.get_report_df()
