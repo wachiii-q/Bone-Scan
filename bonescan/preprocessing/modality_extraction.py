@@ -39,12 +39,14 @@ class ModalityExtraction:
         function to get the properties dictionary template
         '''
         propertiesDict = {
-            "Date": None,
+            "index": None,
+            "date": None,
             "HN": None,
             "ACC": None,
-            "Age": None,
+            "gender": None,
+            "age": None,
             "BMI": None,
-            "Device": None
+            "device": None
         }
         return propertiesDict
     
@@ -56,27 +58,38 @@ class ModalityExtraction:
             log('Error: report file is empty')
             return None
         i = 0
+        log(self.__reportDf)
         for i in range(self.__numCases):
             tempDict = self.get_properties_dict_template()
-            tempDate = self.__reportDf.loc[i, 'Date & time']
-            # the result would be "9/7/2024  13:14:31", split time out
-            tempDate = tempDate.split(' ')[0]
+            tempDate = self.__reportDf.loc[i, 'Date']
+            tempDate = str(tempDate)
+            # tempDate = tempDate.split(' ')[0]
             tempHN = self.__reportDf.loc[i, 'Patient ID']
+            tempHN = str(tempHN)
             tempACC = self.__reportDf.loc[i, 'Accession #']
             tempACC = str(tempACC)
+            tempGender = self.__reportDf.loc[i, 'Sex']
+            tempGender = str(tempGender)
+            if tempGender == 'M':
+                tempGender = 'Male'
+            elif tempGender == 'F':
+                tempGender = 'Female'
             tempAge = self.__reportDf.loc[i, 'Age']
             tempAge = str(tempAge)
             tempBMI = self.__reportDf.loc[i, 'BMI']
             tempBMI = str(tempBMI)
             tempDevice = self.__reportDf.loc[i, 'Device']
-            tempDict['Date'] = tempDate
+            tempDate = tempDate.replace('-', "/")
+            i = i + 1
+            tempDict['index'] = i
+            tempDict['date'] = tempDate
             tempDict['HN'] = tempHN
             tempDict['ACC'] = tempACC
-            tempDict['Age'] = tempAge
+            tempDict['gender'] = tempGender
+            tempDict['age'] = tempAge
             tempDict['BMI'] = tempBMI
-            tempDict['Device'] = tempDevice
+            tempDict['device'] = tempDevice
             self.__reportPropList.append(tempDict)
-            i = i + 1
         log(self.__reportPropList)
     
     def get_report_df(self):
@@ -99,7 +112,15 @@ class ModalityExtraction:
     
 
 if __name__ == "__main__":
-    reportFilePath = 'data/report/NMModality_2024.xlsx'
+    # --[/]: Drop NaN values in the report
+    # reportFilePath = 'data/report/NMModality_2024.xlsx'
+    # reportFileType = 'xlsx'
+    # df = pd.read_excel(reportFilePath)
+    # df = df.dropna(subset=['Date & time', 'Patient ID', 'Accession #', 'Age', 'BMI', 'Device'])
+    # df.to_excel('data/report/Modified_NMModality_2024.xlsx', index=False)
+    
+    # --[/]: test the ModalityExtraction class
+    reportFilePath = 'data/report/Modified_NMModality_2024.xlsx'
     reportFileType = 'xlsx'
     modalityExtraction = ModalityExtraction(reportFilePath, reportFileType)
     modalityExtraction.extract_properties()

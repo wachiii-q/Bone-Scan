@@ -51,6 +51,8 @@ class LabelExtraction:
         try: 
             if self.__reportFileType == 'xlsx':
                 df = pd.read_excel(self.__reportFilePath)
+        
+        #TODO: drop nan temp df 
         except Exception as e:
             df = None
             print('Error reading file: ', e)
@@ -62,8 +64,9 @@ class LabelExtraction:
         '''
         reportPropDict = {
             "index": None,
-            "HN": None,
             "date": None,
+            "HN": None,
+            "ACC": None,
             "gender": None,
             "age": None,
             "cancer_type": None,
@@ -165,13 +168,12 @@ class LabelExtraction:
             tmpDictResult = self.get_properties_dict_template()
             # --[ ]: get HN and date
             tempHN = self.__reportDf.loc[i, 'PID']
-            tempHN = str(tempHN)
             tempDate = self.__reportDf.loc[i, 'InsertDate']
+            tempACC = self.__reportDf.loc[i, 'StudyKey']
+            # tempDate = tempDate.replace("/", "")
             tempText = self.__reportDf.loc[i, 'Report']
-            log(tempText)
             tempText = str(tempText)
             historyText = TextTools.split_text(tempText, self.__kwBoneReport['history'], self.__kwBoneReport['findings'])
-            # handle case when historyText is None
             if historyText is None:
                 print('Error: historyText is None')
                 continue
@@ -211,6 +213,7 @@ class LabelExtraction:
             tmpDictResult["index"] = i
             tmpDictResult["HN"] = tempHN
             tmpDictResult["date"] = tempDate
+            tmpDictResult["ACC"] = tempACC
             tmpDictResult["gender"] = tmpGender
             tmpDictResult["age"] = tmpAge
             tmpDictResult["cancer_type"] = tmpCancerType
@@ -220,7 +223,7 @@ class LabelExtraction:
             tmpDictResult["bone_fracture"] = tmpFracture
             self.__reportPropList.append(tmpDictResult)
             i = i + 1
-        log(self.__reportPropList)
+        # log(self.__reportPropList)
         log(tmpDictResult)
         log(numMetNegative, numMetPositive, numMetNotSure, numDegenerative, numInfection, numFracture)
     
@@ -244,16 +247,13 @@ class LabelExtraction:
     
 
 if __name__ == '__main__':
-    # -- [/]: check file
+    # -- [/]: Drop NaN in report column
     # path = './data/report/Bone_2024.xlsx'
     # fileType = 'xlsx'
     # # open file
     # df = pd.read_excel(path)
     # df_report = df['Report'][0]
     # df = df.dropna(subset=['Report'])
-    # # if df_report is None:
-    # log(df)
-    # log(df["Report"])
     # # save to xlsx
     # df.to_excel('./data/report/Modified_Bone_2024.xlsx', index=False)
     # log(df.head())    

@@ -8,13 +8,6 @@ __pycache__/
 # Distribution / packaging
 *.egg-info/
 .DS_Store
-data/impression_text.csv
-data/impression_text.xlsx
 .vscode/settings.json
-data/BoneReport_2018_with_prop.csv
-data/reportPropList.csv
 data/*
 sandbox/*
-modified_image2.jpg
-modified_image3.jpg
-modified_image5.jpg
