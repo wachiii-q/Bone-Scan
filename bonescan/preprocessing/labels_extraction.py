@@ -211,9 +211,9 @@ class LabelExtraction:
             if tmpFracture == "positive":
                 numFracture = numFracture + 1
             tmpDictResult["index"] = i
-            tmpDictResult["HN"] = tempHN
-            tmpDictResult["date"] = tempDate
-            tmpDictResult["ACC"] = tempACC
+            tmpDictResult["HN"] = str(tempHN)
+            tmpDictResult["date"] = str(tempDate)
+            tmpDictResult["ACC"] = str(tempACC)
             tmpDictResult["gender"] = tmpGender
             tmpDictResult["age"] = tmpAge
             tmpDictResult["cancer_type"] = tmpCancerType
@@ -258,13 +258,53 @@ if __name__ == '__main__':
     # df.to_excel('./data/report/Modified_Bone_2024.xlsx', index=False)
     # log(df.head())    
     
-    # --[/]: test label extraction
-    reportFilePath = './data/report/Modified_Bone_2024.xlsx'
+    # --[/]: test label extraction <main>
+    # reportFilePath = './data/report/Modified_Bone_2024.xlsx'
+    # reportFileType = 'xlsx'
+    # labelExtraction = LabelExtraction(reportFilePath, reportFileType)
+    # labelExtraction.extract_properties()
+    # log(labelExtraction.get_reportPropList_df())
+    # labelExtraction.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2024.csv', index=False)
+    
+    # --[/]: test label extraction < 7 years >
+    report2016 = './data/ExportNM_Bone/ExportNM2016_Bone.xlsx'
+    report2017 = './data/ExportNM_Bone/ExportNM2017_Bone.xlsx'
+    report2018 = './data/ExportNM_Bone/ExportNM2018_Bone.xlsx'
+    report2019 = './data/ExportNM_Bone/ExportNM2019_Bone.xlsx'
+    report2020 = './data/ExportNM_Bone/ExportNM2020_Bone.xlsx'
+    report2021 = './data/ExportNM_Bone/ExportNM2021_Bone.xlsx'
+    report2022 = './data/ExportNM_Bone/ExportNM2022_Bone.xlsx'
     reportFileType = 'xlsx'
-    labelExtraction = LabelExtraction(reportFilePath, reportFileType)
-    labelExtraction.extract_properties()
-    log(labelExtraction.get_reportPropList_df())
-    labelExtraction.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2024.csv', index=False)
+    LabelExtraction2016 = LabelExtraction(report2016, reportFileType)
+    LabelExtraction2017 = LabelExtraction(report2017, reportFileType)
+    LabelExtraction2018 = LabelExtraction(report2018, reportFileType)
+    LabelExtraction2019 = LabelExtraction(report2019, reportFileType)
+    LabelExtraction2020 = LabelExtraction(report2020, reportFileType)
+    LabelExtraction2021 = LabelExtraction(report2021, reportFileType)
+    LabelExtraction2022 = LabelExtraction(report2022, reportFileType)
+    
+    LabelExtraction2016.extract_properties()
+    LabelExtraction2016.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2016.csv', index=False)
+    
+    LabelExtraction2017.extract_properties()
+    LabelExtraction2017.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2017.csv', index=False)
+    
+    LabelExtraction2018.extract_properties()
+    LabelExtraction2018.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2018.csv', index=False)
+    
+    LabelExtraction2019.extract_properties()
+    LabelExtraction2019.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2020.csv', index=False)
+    
+    LabelExtraction2020.extract_properties()
+    LabelExtraction2020.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2020.csv', index=False)
+    
+    LabelExtraction2021.extract_properties()
+    LabelExtraction2021.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2021.csv', index=False)
+    
+    LabelExtraction2022.extract_properties()
+    LabelExtraction2022.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2022.csv', index=False)
+    
+    
 
     # log(labelExtraction.get_report_df().groupby('cancer_type').count())
     # labelExtraction.get_reportPropList_df().to_csv('./data/reportPropList.csv', index=False)
