@@ -163,6 +163,7 @@ class LabelExtraction:
         numDegenerative = 0
         numFracture = 0
         numInfection = 0
+        numNegwithDegenOrFracture = 0
         for i in range(self.__numCases):
             # --[ ]: get history section
             tmpDictResult = self.get_properties_dict_template()
@@ -210,6 +211,8 @@ class LabelExtraction:
                 numInfection = numInfection + 1
             if tmpFracture == "positive":
                 numFracture = numFracture + 1
+            if tmpMetastasis == "negative" and (tmpDegenerative == "positive" or tmpFracture == "positive"):
+                numNegwithDegenOrFracture = numNegwithDegenOrFracture + 1
             tmpDictResult["index"] = i
             tmpDictResult["HN"] = str(tempHN)
             tmpDictResult["date"] = str(tempDate)
@@ -225,7 +228,7 @@ class LabelExtraction:
             i = i + 1
         # log(self.__reportPropList)
         log(tmpDictResult)
-        log(numMetNegative, numMetPositive, numMetNotSure, numDegenerative, numInfection, numFracture)
+        log(numMetNegative, numMetPositive, numMetNotSure, numDegenerative, numInfection, numFracture, numNegwithDegenOrFracture)
     
     def get_report_df(self):
         '''

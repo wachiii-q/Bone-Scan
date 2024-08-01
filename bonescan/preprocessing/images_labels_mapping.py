@@ -41,8 +41,10 @@ class ImageLabelMapping:
             if not image.endswith(self.iamgeType):
                 continue
             tempDictMapping = self.get_mapping_dict_template()
-            tempACCimage = int(image.split('.')[0])
-            # log(tempACCimage)
+            # example 2: 28226616_NMCT870DR.jpg -> 28226616
+            tempACCimage = int(image.split('_')[0])
+            # tempACCimage = int(image.split('.')[0])
+            log(tempACCimage)
             label = self.__labelDf[self.__labelDf['ACC'] == tempACCimage]['metastasis'].values[0] if tempACCimage in self.__labelDf['ACC'].values else None
             # log(label)
             if label == 'positive':
@@ -56,7 +58,7 @@ class ImageLabelMapping:
                 continue
             # duplicate the image to the empty folder
             src = os.path.join(self.__imageFolder, image)
-            dst = os.path.join(self.__emptyFolder, f"{image.split('.')[0]}_{label}.jpg")
+            dst = os.path.join(self.__emptyFolder, f"{image.split('_')[0]}_{label}.jpg")
             shutil.copyfile(src, dst)
             tempDictMapping['image_path'] = os.path.join(self.__imageFolder, image)
             tempDictMapping['image_path_with_label'] = dst
@@ -90,8 +92,8 @@ if __name__ == "__main__":
     labelDf = labelDf[labelDf['metastasis'] != 'not sure']
     labelDf = labelDf.drop(['Unnamed: 0'], axis=1)
     log(labelDf.head())
-    imageFolder = './data/ScreenCap'
-    emptyFolder = './data/ScreenCapLabel'
+    imageFolder = 'data/AntPos/WBjpeg'
+    emptyFolder = 'data/AntPos/WBjpegLabel'
     
     imageLabelMapping = ImageLabelMapping(imageFolder, emptyFolder, labelDf)
     imageLabelMapping.map_image_label()

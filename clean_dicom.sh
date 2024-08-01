@@ -1,6 +1,6 @@
 # Replace 'outer_folder' with the actual name of your outer folder
 outer_folder="./data/Preliminary_BoneImage"
-destination_folder="./data/AntPos" # << change the destination folder here
+destination_folder="./data/temp" # << change the destination folder here
 
 # # For ScreenCap files
 # find "$outer_folder" -type d | while read main_folder; do
