@@ -277,6 +277,7 @@ if __name__ == '__main__':
     report2020 = './data/ExportNM_Bone/ExportNM2020_Bone.xlsx'
     report2021 = './data/ExportNM_Bone/ExportNM2021_Bone.xlsx'
     report2022 = './data/ExportNM_Bone/ExportNM2022_Bone.xlsx'
+    report2023 = './data/ExportNM_Bone/ExportNM2023_Bone.xlsx'
     reportFileType = 'xlsx'
     LabelExtraction2016 = LabelExtraction(report2016, reportFileType)
     LabelExtraction2017 = LabelExtraction(report2017, reportFileType)
@@ -285,6 +286,7 @@ if __name__ == '__main__':
     LabelExtraction2020 = LabelExtraction(report2020, reportFileType)
     LabelExtraction2021 = LabelExtraction(report2021, reportFileType)
     LabelExtraction2022 = LabelExtraction(report2022, reportFileType)
+    LabelExtraction2023 = LabelExtraction(report2023, reportFileType)
     
     LabelExtraction2016.extract_properties()
     LabelExtraction2016.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2016.csv', index=False)
@@ -306,6 +308,9 @@ if __name__ == '__main__':
     
     LabelExtraction2022.extract_properties()
     LabelExtraction2022.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2022.csv', index=False)
+    
+    LabelExtraction2023.extract_properties()
+    LabelExtraction2023.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2023.csv', index=False)
     
     
 
