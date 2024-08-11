@@ -29,6 +29,7 @@ class ImageLabelMapping:
             "image_path_with_label": None,
             "label": None,
             "date": None,
+            "ACC": None,
             "HN": None,
             "age": None,
             "gender": None,
@@ -76,6 +77,7 @@ class ImageLabelMapping:
                     continue
                 tempDictMapping['date'] = tempLabelDf['date'].values[0]
                 tempDictMapping['HN'] = tempLabelDf['HN'].values[0]
+                tempDictMapping['ACC'] = tempLabelDf['ACC'].values[0]
                 # tempDictMapping['age'] = tempLabelDf['age'].values[0]
                 tempDictMapping['age'] = tempAge
                 tempDictMapping['gender'] = tempGender
