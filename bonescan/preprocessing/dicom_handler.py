@@ -89,7 +89,7 @@ class DicomHandler:
                 # remove the midline
                 tempImg = ImageTools.remove_midline(tempImg, 12, tempColor)
             else:
-                log('Image size not supported')
+                # print("image size: ", height, width)
                 continue
             cv2.imwrite(os.path.join(imageFolder, image), tempImg)
             log('Image cropped: ', image)
@@ -99,13 +99,14 @@ class DicomHandler:
 if __name__ == '__main__':
     # !! need to clean dicom folder first: run >> bash clean_dicom.sh
     # --[ ]: test rename all dicom
-    dicomFolder = './data/ScreenCap'
+    # dicomFolder = './data/ScreenCap' # Source folder
+    dicomFolder = 'data/for_test_cleandicom'
     DicomHandler.rename_dicom_files(dicomFolder)
     
     # --[ ]: test save as jpg
     DicomHandler.save_as_jpg(dicomFolder)
     
     # --[ ]: test crop image and remove rectangle
-    imageFolder = './data/ScreenCap'
+    imageFolder = './data/ScreenCap' # Destination folder
     DicomHandler.crop_image(imageFolder)
     

@@ -47,6 +47,7 @@ class MergeModality:
         
 
 if __name__ == '__main__':
+    # SOURCE
     mainReportFilePath = 'data/report/Extracted_Bone_2024.csv'
     modalityReportFilePath = 'data/report/Extracted_NMModality_2024.csv'
     fileType = 'csv'
@@ -54,6 +55,7 @@ if __name__ == '__main__':
     mergeModality.merge_modality()
     mergedDf = mergeModality.get_merged_df()
     log(mergedDf)
+    # DESTINATION
     mergedDf.to_csv('data/report/Merged_2024.csv', index=True)
     
     

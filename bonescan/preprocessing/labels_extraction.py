@@ -269,7 +269,7 @@ if __name__ == '__main__':
     # log(labelExtraction.get_reportPropList_df())
     # labelExtraction.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2024.csv', index=False)
     
-    # --[/]: test label extraction < 7 years >
+    # --[/]: test label extraction < 7 years > SOURCE
     report2016 = './data/ExportNM_Bone/ExportNM2016_Bone.xlsx'
     report2017 = './data/ExportNM_Bone/ExportNM2017_Bone.xlsx'
     report2018 = './data/ExportNM_Bone/ExportNM2018_Bone.xlsx'
@@ -288,6 +288,7 @@ if __name__ == '__main__':
     LabelExtraction2022 = LabelExtraction(report2022, reportFileType)
     LabelExtraction2023 = LabelExtraction(report2023, reportFileType)
     
+    # DESTINATION PATH
     LabelExtraction2016.extract_properties()
     LabelExtraction2016.get_reportPropList_df().to_csv('./data/report/Extracted_Bone_2016.csv', index=False)
     
